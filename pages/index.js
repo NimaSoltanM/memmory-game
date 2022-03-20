@@ -1,12 +1,124 @@
-import Link from 'next/link'
+import { Button, Modal } from '@mantine/core';
+import { useState, useEffect } from 'react';
+import SingleCard from '../components/SingleCard';
 
-export default function IndexPage() {
+export default function Home() {
+  const [cards, setCards] = useState([]);
+  const [turns, setTurns] = useState(0);
+  const [choiceOne, setChoiceOne] = useState(null);
+  const [choiceTwo, setChoiceTwo] = useState(null);
+  const [disabled, setDisabled] = useState(false);
+  const [opened, setOpened] = useState(false);
+
+  let cardImages = [
+    { src: '/static/img/helmet-1.png', matched: false },
+    { src: '/static/img/potion-1.png', matched: false },
+    { src: '/static/img/ring-1.png', matched: false },
+    { src: '/static/img/scroll-1.png', matched: false },
+    { src: '/static/img/shield-1.png', matched: false },
+    { src: '/static/img/sword-1.png', matched: false },
+  ];
+
+  const shuffleCards = () => {
+    let shuffledCards = [...cardImages, ...cardImages]
+      .sort(() => Math.random() - 0.5)
+      .map((card) => ({ ...card, id: Math.random() }));
+
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setCards(shuffledCards);
+    setTurns(0);
+  };
+
+  const handleChoice = (card) => {
+    choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
+  };
+
+  useEffect(() => {
+    if (choiceOne && choiceTwo) {
+      setDisabled(true);
+      if (choiceOne.src === choiceTwo.src) {
+        setCards((prevState) => {
+          return prevState.map((card) => {
+            return card.src === choiceOne.src
+              ? { ...card, matched: true }
+              : card;
+          });
+        });
+        resetTurns();
+      } else {
+        setTimeout(() => {
+          resetTurns();
+        }, 1000);
+      }
+    }
+  }, [choiceOne, choiceTwo]);
+
+  const resetTurns = () => {
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setTurns((prevState) => prevState + 1);
+    setDisabled(false);
+  };
+
+  const closeModalHandler = () => {
+    shuffleCards();
+    setOpened(false);
+  };
+
+  useEffect(() => {
+    shuffleCards();
+  }, []);
+
+  useEffect(() => {
+    let matchedElements = [];
+
+    cards.map((card) => {
+      matchedElements.push(card.matched);
+    });
+
+    if (matchedElements.length > 0) {
+      let checker = (arr) => arr.every((v) => v === true);
+      setOpened(checker(matchedElements));
+    }
+  }, [choiceOne, choiceTwo]);
+
   return (
-    <div>
-      Hello World.{' '}
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </div>
-  )
+    <>
+      <div className='app'>
+        <h1>Magic Game</h1>
+        <button onClick={shuffleCards}>New Game</button>
+
+        <div className='card-grid'>
+          {cards.map((card) => (
+            <SingleCard
+              key={card.id}
+              card={card}
+              handleChoice={handleChoice}
+              flipped={card === choiceOne || card === choiceTwo || card.matched}
+              disabled={disabled}
+            />
+          ))}
+        </div>
+        <p>Turnes = {turns}</p>
+      </div>
+
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={`${turns} Turns!`}
+      >
+        <h1>آفرین نامدار</h1>
+        <Button
+          className='modal-button'
+          size='lg'
+          variant='gradient'
+          gradient={{ from: 'pink', to: 'grape' }}
+          onClick={closeModalHandler}
+        >
+          Play Again
+        </Button>
+      </Modal>
+    </>
+  );
 }
