@@ -95,8 +95,11 @@ export default function Home() {
     <>
       <div className='app'>
         <h1>Quazza</h1>
+        <button className='button' style={{ marginBottom: '2rem' }}>
+          New Game
+        </button>
         <Center>
-          <MantineProvider theme={{ colorScheme: 'dark' }}>
+          <MantineProvider theme={{ colorScheme: 'light' }}>
             <TextInput
               value={name}
               onChange={setName}

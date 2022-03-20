@@ -7,7 +7,7 @@ body {
   padding: 0;
   font-size: 1.5em;
   text-align: center;
-  background: url('/static/mesh.png');
+  background: #2c2238;
   color: #fff;
 }
 
