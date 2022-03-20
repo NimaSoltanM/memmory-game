@@ -1,4 +1,11 @@
-import { Button, Modal } from '@mantine/core';
+import {
+  Button,
+  Center,
+  MantineProvider,
+  Modal,
+  TextInput,
+} from '@mantine/core';
+import { useInputState } from '@mantine/hooks';
 import { useState, useEffect } from 'react';
 import SingleCard from '../components/SingleCard';
 
@@ -9,6 +16,7 @@ export default function Home() {
   const [choiceTwo, setChoiceTwo] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [name, setName] = useInputState(null);
 
   let cardImages = [
     { src: '/static/img/helmet-1.png', matched: false },
@@ -86,8 +94,17 @@ export default function Home() {
   return (
     <>
       <div className='app'>
-        <h1>Magic Game</h1>
-        <button onClick={shuffleCards}>New Game</button>
+        <h1>Quazza</h1>
+        <Center>
+          <MantineProvider theme={{ colorScheme: 'dark' }}>
+            <TextInput
+              value={name}
+              onChange={setName}
+              sx={{ width: '50%' }}
+              placeholder='اسمتو وارد کن'
+            />
+          </MantineProvider>
+        </Center>
 
         <div className='card-grid'>
           {cards.map((card) => (
@@ -108,7 +125,7 @@ export default function Home() {
         onClose={() => setOpened(false)}
         title={`${turns} Turns!`}
       >
-        <h1>آفرین نامدار</h1>
+        <h1>آفرین {name}</h1>
         <Button
           className='modal-button'
           size='lg'
