@@ -95,7 +95,11 @@ export default function Home() {
     <>
       <div className='app'>
         <h1>Quazza</h1>
-        <button className='button' style={{ marginBottom: '2rem' }}>
+        <button
+          className='button'
+          style={{ marginBottom: '2rem' }}
+          onClick={shuffleCards}
+        >
           New Game
         </button>
         <Center>
@@ -104,7 +108,7 @@ export default function Home() {
               value={name}
               onChange={setName}
               sx={{ width: '50%' }}
-              placeholder='اسمتو وارد کن'
+              placeholder='اسمتو به فارسی وارد کن'
             />
           </MantineProvider>
         </Center>
